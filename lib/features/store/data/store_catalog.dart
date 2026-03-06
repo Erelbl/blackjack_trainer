@@ -3,7 +3,7 @@ import '../models/store_item.dart';
 
 class StoreCatalog {
   static const List<StoreItem> allItems = [
-    // Card Skins
+    // ── Card Skins ──────────────────────────────────────────────────────────
     StoreItem(
       id: 'card_classic_red',
       name: 'Classic Red',
@@ -11,12 +11,14 @@ class StoreCatalog {
       type: ItemType.cardSkin,
       description: 'Traditional red card back',
     ),
+    // Card skin assets not yet shipped — keep in catalog for future release.
     StoreItem(
       id: 'card_casino_gold',
       name: 'Casino Gold',
       price: 500,
       type: ItemType.cardSkin,
       description: 'Luxury gold pattern',
+      isAvailable: false,
     ),
     StoreItem(
       id: 'card_neon_glow',
@@ -24,9 +26,10 @@ class StoreCatalog {
       price: 800,
       type: ItemType.cardSkin,
       description: 'Modern cyberpunk theme',
+      isAvailable: false,
     ),
 
-    // Table Themes
+    // ── Table Themes ─────────────────────────────────────────────────────────
     StoreItem(
       id: 'table_casino_green',
       name: 'Casino Green',
@@ -39,7 +42,7 @@ class StoreCatalog {
       name: 'Midnight Blue',
       price: 300,
       type: ItemType.tableTheme,
-      description: 'Dark blue felt, easier on eyes',
+      description: 'Dark blue felt, easy on the eyes',
     ),
     StoreItem(
       id: 'table_sunset_red',
@@ -49,7 +52,7 @@ class StoreCatalog {
       description: 'Warm red gradient',
     ),
 
-    // Dealer Skins
+    // ── Dealer Skins ─────────────────────────────────────────────────────────
     StoreItem(
       id: 'dealer_default',
       name: 'Default Dealer',
@@ -62,7 +65,8 @@ class StoreCatalog {
       name: 'Premium Dealer',
       price: 999,
       type: ItemType.dealerSkin,
-      description: 'Coming soon...',
+      description: 'Animated dealer persona',
+      isAvailable: false,
     ),
   ];
 

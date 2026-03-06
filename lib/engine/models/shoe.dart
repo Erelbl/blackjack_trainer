@@ -5,11 +5,9 @@ import 'suit.dart';
 
 class Shoe {
   final List<Card> _cards;
-  final Random _random;
 
   Shoe({int deckCount = 6, Random? random})
-      : _random = random ?? Random(),
-        _cards = _initializeAndShuffleCards(deckCount, random ?? Random());
+      : _cards = _initializeAndShuffleCards(deckCount, random ?? Random());
 
   static List<Card> _initializeAndShuffleCards(int deckCount, Random random) {
     final cards = <Card>[];
@@ -35,4 +33,7 @@ class Shoe {
 
   int get cardsRemaining => _cards.length;
   bool get isEmpty => _cards.isEmpty;
+
+  /// An unmodifiable view of the remaining cards (used for win-rate simulation).
+  List<Card> get remainingCards => List.unmodifiable(_cards);
 }

@@ -9,6 +9,9 @@ class IapProduct {
   final IapProductType type;
   final int? coinAmount;
   final bool isBestValue;
+  /// Non-null when this product unlocks a table theme.
+  /// Value matches [TableThemeItem.id] in ThemeCatalog.
+  final String? themeId;
 
   const IapProduct({
     required this.id,
@@ -19,5 +22,6 @@ class IapProduct {
     required this.type,
     this.coinAmount,
     this.isBestValue = false,
+    this.themeId,
   });
 }

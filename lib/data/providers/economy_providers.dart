@@ -31,8 +31,9 @@ class EconomyController extends StateNotifier<AsyncValue<EconomyState>> {
 
   Future<void> addCoins(int amount) async {
     state.whenData((currentEconomy) async {
+      final newCoins = (currentEconomy.coins + amount).clamp(0, 999999999);
       final newEconomy = currentEconomy.copyWith(
-        coins: currentEconomy.coins + amount,
+        coins: newCoins,
       );
       state = AsyncValue.data(newEconomy);
       await _repository.save(newEconomy);

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart' hide Card;
 import '../../../engine/models/card.dart';
-import '../../../engine/models/rank.dart';
-import '../../../engine/models/suit.dart';
+import 'card_assets.dart';
 
-class PlayingCardWidget extends StatelessWidget {
+// ---------------------------------------------------------------------------
+// PlayingCardWidget — shows a single card face or back.
+// When [faceDown] transitions true→false the card plays a horizontal flip
+// animation (scale-X collapse then expand) without any layout changes.
+// ---------------------------------------------------------------------------
+class PlayingCardWidget extends StatefulWidget {
   final Card? card;
   final bool faceDown;
   final bool animate;
@@ -16,100 +20,111 @@ class PlayingCardWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    if (card == null) {
-      return const SizedBox(width: 70, height: 100);
-    }
+  State<PlayingCardWidget> createState() => _PlayingCardWidgetState();
+}
 
-    return RepaintBoundary(
-      child: faceDown ? _buildCardBack() : _buildCardFace(),
+class _PlayingCardWidgetState extends State<PlayingCardWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _flipCtrl;
+  late final Animation<double> _flipAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _flipCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
     );
+    // easeInOut: the card slows at start/end, speeds through the midpoint.
+    _flipAnim = CurvedAnimation(parent: _flipCtrl, curve: Curves.easeInOut);
   }
 
-  Widget _buildCardBack() {
-    return Container(
-      width: 70,
-      height: 100,
-      decoration: BoxDecoration(
-        color: Colors.blue.shade800,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white, width: 2),
-      ),
-      child: const Center(
-        child: Icon(
-          Icons.casino,
-          color: Colors.white,
-          size: 32,
+  @override
+  void didUpdateWidget(covariant PlayingCardWidget old) {
+    super.didUpdateWidget(old);
+    // Animate only on face-down → face-up transition (dealer hole card reveal).
+    if (old.faceDown && !widget.faceDown && widget.animate) {
+      _flipCtrl.forward(from: 0);
+    } else if (!old.faceDown && widget.faceDown) {
+      // Snap instantly back to face-down (e.g. game reset).
+      _flipCtrl.reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _flipCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.card == null) {
+      return const SizedBox(width: kCardWidth, height: kCardHeight);
+    }
+
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final decodeW = (kCardWidth  * dpr).ceil();
+    final decodeH = (kCardHeight * dpr).ceil();
+
+    return RepaintBoundary(
+      child: SizedBox(
+        width: kCardWidth,
+        height: kCardHeight,
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: 2.5 / 3.5,
+            child: AnimatedBuilder(
+              animation: _flipAnim,
+              builder: (context, _) {
+                final t = _flipAnim.value;
+
+                // Determine which face to render:
+                //   • While animating (0 < t < 1): show back in first half,
+                //     face in second half — mirrors a physical card rotation.
+                //   • Not animating (t == 0): follow widget.faceDown directly.
+                final showBack = (t > 0 && t < 1.0) ? (t < 0.5) : widget.faceDown;
+
+                // Horizontal scale: 1→0 (first half), 0→1 (second half).
+                final scaleX = t < 0.5 ? (1.0 - t * 2.0) : ((t - 0.5) * 2.0);
+
+                final path = showBack
+                    ? CardAssets.back
+                    : CardAssets.pathFor(widget.card!.rank, widget.card!.suit);
+
+                return Transform.scale(
+                  scaleX: scaleX,
+                  alignment: Alignment.center,
+                  child: Container(
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: Colors.grey.shade300),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x28000000), // ~16 % black
+                          blurRadius: 3,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(4),
+                    child: Image(
+                      image: CardAssets.provider(
+                        path,
+                        decodeW: decodeW,
+                        decodeH: decodeH,
+                      ),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
-  }
-
-  Widget _buildCardFace() {
-    final currentCard = card!;
-    final isRed = currentCard.suit == Suit.hearts || currentCard.suit == Suit.diamonds;
-    final suitColor = isRed ? Colors.red : Colors.black;
-    final rankText = _getRankSymbol(currentCard.rank);
-    final suitText = _getSuitSymbol(currentCard.suit);
-
-    return Container(
-      width: 70,
-      height: 100,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade400, width: 1),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            rankText,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: suitColor,
-              height: 1.0,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            suitText,
-            style: TextStyle(
-              fontSize: 28,
-              color: suitColor,
-              height: 1.0,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _getRankSymbol(Rank rank) {
-    return switch (rank) {
-      Rank.ace => 'A',
-      Rank.two => '2',
-      Rank.three => '3',
-      Rank.four => '4',
-      Rank.five => '5',
-      Rank.six => '6',
-      Rank.seven => '7',
-      Rank.eight => '8',
-      Rank.nine => '9',
-      Rank.ten => '10',
-      Rank.jack => 'J',
-      Rank.queen => 'Q',
-      Rank.king => 'K',
-    };
-  }
-
-  String _getSuitSymbol(Suit suit) {
-    return switch (suit) {
-      Suit.spades => '♠',
-      Suit.hearts => '♥',
-      Suit.diamonds => '♦',
-      Suit.clubs => '♣',
-    };
   }
 }

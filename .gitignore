@@ -43,3 +43,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
+.claude/*.local.json
+
+# OS junk
+**/Thumbs.db
+nul

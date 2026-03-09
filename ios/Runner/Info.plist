@@ -4,7 +4,7 @@
 	<dict>
 		<!-- AdMob: replace with your real App ID from AdMob console (format: ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX) -->
 		<key>GADApplicationIdentifier</key>
-		<string>ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX</string>
+		<string>ca-app-pub-9517238755630916~3120020028</string>
 		<!-- Required for App Tracking Transparency (iOS 14+); shown before IDFA consent prompt -->
 		<key>NSUserTrackingUsageDescription</key>
 		<string>This identifier will be used to deliver personalized ads to you.</string>
@@ -187,5 +187,9 @@
 		<false/>
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>
+		<key>UIDeviceFamily</key>
+		<array>
+			<integer>1</integer>
+		</array>
 	</dict>
 </plist>

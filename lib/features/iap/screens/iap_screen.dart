@@ -90,34 +90,37 @@ class _IapScreenState extends ConsumerState<IapScreen> {
       appBar: AppBar(
         title: const Text('Get Coins'),
         actions: [
-          TextButton.icon(
-            icon: isRestoring
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : const Icon(Icons.restore, color: Colors.white),
-            label: Text(
-              'Restore',
-              style: AppTheme.bodyStyle(
-                fontSize: 13,
-                color: Colors.white,
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (value) {
+              if (value == 'restore' && !isRestoring) {
+                ref
+                    .read(iapControllerProvider.notifier)
+                    .restorePurchases();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Restoring purchases...')),
+                );
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem<String>(
+                value: 'restore',
+                enabled: !isRestoring,
+                child: Row(
+                  children: [
+                    isRestoring
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.restore, size: 18),
+                    const SizedBox(width: 10),
+                    const Text('Restore Purchases'),
+                  ],
+                ),
               ),
-            ),
-            onPressed: isRestoring
-                ? null
-                : () {
-                    ref
-                        .read(iapControllerProvider.notifier)
-                        .restorePurchases();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Restoring purchases...')),
-                    );
-                  },
+            ],
           ),
           const Padding(
             padding: EdgeInsets.only(right: 16),
@@ -503,23 +506,21 @@ class _CoinPackCard extends StatelessWidget {
                 size: 40, color: AppTheme.casinoGold),
             const SizedBox(width: 16),
 
-            // Title + amount
+            // Amount (primary) + pack name (secondary)
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title.toUpperCase(),
+                    '${_formatCoins(coinAmount)} Coins',
                     style: AppTheme.displayStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        letterSpacing: 1.5),
+                        fontSize: 18, color: AppTheme.casinoGold),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${_formatCoins(coinAmount)} coins',
+                    title,
                     style: AppTheme.bodyStyle(
-                        fontSize: 13, color: AppTheme.casinoGold),
+                        fontSize: 11, color: Colors.white54),
                   ),
                 ],
               ),

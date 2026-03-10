@@ -36,6 +36,19 @@ class TrainerGameTab extends ConsumerStatefulWidget {
 
 class _TrainerGameTabState extends ConsumerState<TrainerGameTab> {
   bool _precached = false;
+  TrainerController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = ref.read(trainerControllerProvider.notifier);
+  }
+
+  @override
+  void dispose() {
+    _controller?.resetSession();
+    super.dispose();
+  }
 
   @override
   void didChangeDependencies() {

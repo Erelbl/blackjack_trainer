@@ -2377,11 +2377,12 @@ class _ChallengesBottomSheetState
       builder: (_, __) {
         final pm = ProgressionManager.instance;
         final challenges = pm.isInitialized ? pm.todaysChallenges : <ChallengeDefinition>[];
+        final tokens = Theme.of(context).extension<TableThemeTokens>();
         return SafeArea(
           child: Container(
             margin: const EdgeInsets.fromLTRB(8, 0, 8, 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF0D4A25),
+              color: tokens?.darkFelt ?? const Color(0xFF0D4A25),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: AppTheme.casinoGold.withValues(alpha: 0.3),
@@ -2455,7 +2456,7 @@ class _ChallengeCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: claimed
-              ? Colors.green.withValues(alpha: 0.5)
+              ? AppTheme.casinoGold.withValues(alpha: 0.4)
               : complete
                   ? AppTheme.casinoGold.withValues(alpha: 0.4)
                   : Colors.white12,
@@ -2483,15 +2484,15 @@ class _ChallengeCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.2),
+                    color: AppTheme.casinoGold.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(6),
-                    border:
-                        Border.all(color: Colors.green.withValues(alpha: 0.5)),
+                    border: Border.all(
+                        color: AppTheme.casinoGold.withValues(alpha: 0.4)),
                   ),
                   child: Text(
                     'CLAIMED',
                     style: AppTheme.bodyStyle(
-                        fontSize: 9, color: Colors.greenAccent),
+                        fontSize: 9, color: AppTheme.casinoGold),
                   ),
                 )
               else if (complete && !claiming)
@@ -2532,8 +2533,8 @@ class _ChallengeCard extends StatelessWidget {
               value: pct,
               minHeight: 5,
               backgroundColor: Colors.white10,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                claimed ? Colors.green : AppTheme.casinoGold,
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppTheme.casinoGold,
               ),
             ),
           ),

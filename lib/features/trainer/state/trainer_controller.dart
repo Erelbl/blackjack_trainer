@@ -26,6 +26,23 @@ class TrainerController extends StateNotifier<TrainerState> {
   // Mode management
   // ---------------------------------------------------------------------------
 
+  /// Resets game state to idle while preserving accumulated stats.
+  /// Called when [TrainerGameTab] is disposed so returning to the trainer
+  /// always starts with a fresh table.
+  void resetSession() {
+    _game = BlackjackGame(rules: const BlackjackRules());
+    _simGeneration++; // discard any in-flight simulation
+    state = TrainerState(
+      playerCards: const [],
+      dealerCards: const [],
+      gameState: GameState.idle,
+      roundActive: false,
+      mode: state.mode,
+      learnStats: state.learnStats,
+      testStats: state.testStats,
+    );
+  }
+
   /// Switches between Learn and Test modes. Clears winRates since Test mode
   /// never computes them.
   void setMode(TrainerMode mode) {

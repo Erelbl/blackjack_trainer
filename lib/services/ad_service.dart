@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -32,12 +34,15 @@ class AdState {
 }
 
 class AdNotifier extends StateNotifier<AdState> {
-  // TODO(release): Replace the production ID with your real AdMob rewarded
-  // ad unit ID before publishing. The current value is Google's test ID.
-  static const String _testAdUnitId = 'ca-app-pub-3940256099942544/5224354917';
-  static const String _prodAdUnitId = 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX';
-  static String get _rewardedAdUnitId =>
-      kDebugMode ? _testAdUnitId : _prodAdUnitId;
+  static const String _testRewardedId = 'ca-app-pub-3940256099942544/5224354917';
+  static const String _prodRewardedIdIOS = 'ca-app-pub-9517238755630916/2771159911';
+  static const String _prodRewardedIdAndroid = 'ca-app-pub-9517238755630916/1498992180';
+
+  static String get _rewardedAdUnitId {
+    if (kDebugMode) return _testRewardedId;
+    if (kIsWeb) return _testRewardedId;
+    return Platform.isIOS ? _prodRewardedIdIOS : _prodRewardedIdAndroid;
+  }
 
   static const int _maxAdsPerDay = 7;
 
@@ -102,8 +107,11 @@ class AdNotifier extends StateNotifier<AdState> {
 
     state = state.copyWith(isLoading: true, isReady: false);
 
+    final adUnitId = _rewardedAdUnitId;
+    debugPrint('[Ad] Loading rewarded ad: $adUnitId');
+
     await RewardedAd.load(
-      adUnitId: _rewardedAdUnitId,
+      adUnitId: adUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
@@ -116,6 +124,10 @@ class AdNotifier extends StateNotifier<AdState> {
         },
         onAdFailedToLoad: (error) {
           if (!mounted) return;
+          debugPrint(
+            '[Ad] Rewarded load failed (adUnitId=$adUnitId) '
+            'code=${error.code} message=${error.message}',
+          );
           state = state.copyWith(isLoading: false, isReady: false);
           // Retry after a delay
           Future.delayed(const Duration(minutes: 1), () {

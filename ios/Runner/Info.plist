@@ -5,9 +5,6 @@
 		<!-- AdMob: replace with your real App ID from AdMob console (format: ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX) -->
 		<key>GADApplicationIdentifier</key>
 		<string>ca-app-pub-9517238755630916~3120020028</string>
-		<!-- Required for App Tracking Transparency (iOS 14+); shown before IDFA consent prompt -->
-		<key>NSUserTrackingUsageDescription</key>
-		<string>This identifier will be used to deliver personalized ads to you.</string>
 		<!-- SKAdNetwork entries required for Google Mobile Ads attribution -->
 		<key>SKAdNetworkItems</key>
 		<array>

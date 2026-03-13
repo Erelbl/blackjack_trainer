@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/providers/economy_providers.dart';
+import '../../../services/analytics_service.dart';
 import '../../../engine/models/card.dart';
 import '../../../engine/models/rank.dart';
 import '../../../engine/models/suit.dart';
@@ -189,6 +190,7 @@ class DailyDrillController extends StateNotifier<DailyDrillState> {
       claimed:          state.claimed,
     );
     _ticker = Timer.periodic(const Duration(seconds: 1), _onTick);
+    AnalyticsService.instance.logDailyDrillStart();
   }
 
   void _onTick(Timer _) {
@@ -212,6 +214,11 @@ class DailyDrillController extends StateNotifier<DailyDrillState> {
       finished:         true,
       isNewBest:        isNewBest,
       bestScore:        newBest,
+    );
+    AnalyticsService.instance.logDailyDrillEnd(
+      score:           score,
+      durationSeconds: 60,
+      completed:       1,
     );
 
     if (isNewBest) {

@@ -10,7 +10,7 @@ import 'dart:math';
 ///     above    → step 500
 /// - Always includes the exact cap (highest affordable amount).
 /// - Result is capped at 20 entries; important base points are preserved.
-List<int> generateSnapPoints(int coins, {int maxBet = 9999}) {
+List<int> generateSnapPoints(int coins, {int maxBet = 10000}) {
   final cap = min(coins, maxBet);
   if (cap <= 0) return [];
 

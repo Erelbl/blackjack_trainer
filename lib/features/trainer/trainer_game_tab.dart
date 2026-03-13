@@ -545,7 +545,7 @@ class _FeedbackStrip extends ConsumerWidget {
       constraints: const BoxConstraints(minHeight: _kFeedbackMinH),
       child: Container(
         color: tokens?.darkFelt ?? AppTheme.darkFelt,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
         child: feedback == null
             ? Center(
                 child: Text(

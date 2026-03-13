@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../engine/strategy/basic_strategy.dart';
+import '../../../services/analytics_service.dart';
 import 'drill_engine.dart';
 
 /// Shared SharedPreferences key for the Speed Drill personal-best score.
@@ -111,6 +112,7 @@ class DrillController extends StateNotifier<DrillState> {
       personalBest:     state.personalBest, // carry forward loaded best
     );
     _ticker = Timer.periodic(const Duration(seconds: 1), _onTick);
+    AnalyticsService.instance.logSpeedDrillStart();
   }
 
   void _onTick(Timer _) {
@@ -134,6 +136,12 @@ class DrillController extends StateNotifier<DrillState> {
       finished:         true,
       isNewPb:          isNewPb,
       personalBest:     newBest,
+    );
+    AnalyticsService.instance.logSpeedDrillEnd(
+      score:           score,
+      durationSeconds: 60,
+      correctAnswers:  state.correct,
+      totalAnswers:    state.totalAnswered,
     );
 
     if (isNewPb) {

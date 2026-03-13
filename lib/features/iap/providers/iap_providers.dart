@@ -9,6 +9,7 @@ import '../repositories/iap_repository.dart';
 import '../repositories/in_app_purchase_repository.dart';
 import '../../../data/providers/economy_providers.dart';
 import '../../../features/store/providers/store_providers.dart';
+import '../../../services/analytics_service.dart';
 
 // ── Availability ──────────────────────────────────────────────────────────────
 
@@ -120,6 +121,11 @@ class IapController extends StateNotifier<AsyncValue<IapState>> {
       final isValid = await _verifyPurchaseLocally(purchase);
       if (isValid) {
         await _deliverProduct(purchase);
+        if (purchase.status == PurchaseStatus.purchased) {
+          AnalyticsService.instance.logIapPurchaseSuccess(
+            productId: purchase.productID,
+          );
+        }
       }
 
       if (purchase.pendingCompletePurchase) {

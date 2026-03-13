@@ -8,6 +8,7 @@ import '../../features/iap/models/iap_state.dart';
 import '../../features/iap/providers/iap_providers.dart';
 import '../../engine/config/retention_config.dart';
 import '../../services/ad_service.dart';
+import '../../services/analytics_service.dart';
 import '../../shared/widgets/coin_balance.dart';
 import '../play/widgets/table_background.dart';
 import 'data/theme_catalog.dart';
@@ -66,11 +67,22 @@ class _IapUnavailableBanner extends ConsumerWidget {
 
 // ── StoreScreen ───────────────────────────────────────────────────────────────
 
-class StoreScreen extends ConsumerWidget {
+class StoreScreen extends ConsumerStatefulWidget {
   const StoreScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StoreScreen> createState() => _StoreScreenState();
+}
+
+class _StoreScreenState extends ConsumerState<StoreScreen> {
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsService.instance.logShopOpen();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final storeAsync = ref.watch(storeControllerProvider);
     final economyAsync = ref.watch(economyControllerProvider);
     final iapStateAsync = ref.watch(iapControllerProvider);

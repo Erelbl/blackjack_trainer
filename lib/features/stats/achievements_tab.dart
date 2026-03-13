@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import '../../engine/progression/achievement_definitions.dart';
 import '../../engine/progression/progression_manager.dart';
+import '../../services/analytics_service.dart';
 
 // Category sort order: mastery → challenges → trainer → game.
 const _kCategoryOrder = {
@@ -41,6 +42,7 @@ class _AchievementsTabState extends State<AchievementsTab> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService.instance.logAchievementsOpen();
     // Mark all pending "new" achievements as seen once the tab opens.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final pm = ProgressionManager.instance;

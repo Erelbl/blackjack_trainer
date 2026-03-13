@@ -7,6 +7,7 @@ import '../../../engine/models/card.dart';
 import '../../../engine/models/rank.dart';
 import '../../../engine/models/suit.dart';
 import 'counting_config.dart';
+import '../../../services/analytics_service.dart';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -161,6 +162,9 @@ class CountingTrainerController
       Duration(milliseconds: state.selectedPace.milliseconds),
       _onRevealTick,
     );
+    AnalyticsService.instance.logCountingSessionStart(
+      durationSeconds: state.selectedDuration.seconds,
+    );
   }
 
   void _onCountdownTick(Timer _) {
@@ -195,6 +199,10 @@ class CountingTrainerController
     state = state.copyWith(
       userAnswer: answer,
       result:     answer == state.runningCountActual,
+    );
+    AnalyticsService.instance.logCountingSessionEnd(
+      durationSeconds: state.selectedDuration.seconds,
+      score: state.cardsShown,
     );
   }
 

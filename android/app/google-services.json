@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "387516547096",
+    "project_id": "blackjack-trainer-pro-999dc",
+    "storage_bucket": "blackjack-trainer-pro-999dc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387516547096:android:467a5da394475200ccc36d",
+        "android_client_info": {
+          "package_name": "com.blackjacktrainer.blackjack_trainer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoR39UZYMTOLnNgT7uqGSzBYZ-SnvmLAw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

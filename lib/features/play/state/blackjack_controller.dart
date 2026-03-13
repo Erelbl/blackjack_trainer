@@ -13,6 +13,7 @@ import '../../../data/providers/economy_providers.dart';
 import '../../../data/providers/progression_providers.dart';
 import '../../../data/providers/weekly_goal_providers.dart';
 import '../../../engine/config/blackjack_rules.dart';
+import '../../../services/analytics_service.dart';
 import '../../../services/audio_service.dart';
 import '../../../services/rules_storage.dart';
 import '../debug/rebuild_counter.dart';
@@ -197,6 +198,10 @@ class BlackjackController extends StateNotifier<BlackjackState> {
       debugPrint('[BlackjackController] Starting new round (state: ${_game.state})');
       // Reset so _syncState() sees non-terminal → terminal for immediate BJ/push.
       _previousGameState = GameState.idle;
+      // Fire once per session — handsPlayed is still 0 before the first deal.
+      if (_ref.read(sessionStatsProvider).handsPlayed == 0) {
+        AnalyticsService.instance.logGameStart();
+      }
       _game.startNewRound();
       // _syncState() MUST precede playSfx: it sets isActionLocked: false.
       _syncState();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/theme.dart';
 import '../../engine/strategy/basic_strategy.dart';
+import '../../services/analytics_service.dart';
 import '../store/models/table_theme_item.dart';
 
 // ---------------------------------------------------------------------------
@@ -21,6 +22,12 @@ class StrategyTablesTab extends StatefulWidget {
 
 class _StrategyTablesTabState extends State<StrategyTablesTab> {
   _TableType _selected = _TableType.hard;
+
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsService.instance.logStrategyTableOpen();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +154,7 @@ class _StrategyGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const dealerLabels = BasicStrategy.dealerUpcardLabels;
-    const rowLabelW = 72.0;
+    const rowLabelW = 56.0;
     const cellW = 32.0;
     const cellH = 30.0;
     const headerH = 26.0;

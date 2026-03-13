@@ -16,6 +16,7 @@ import '../../data/providers/economy_providers.dart';
 import '../../data/providers/progression_providers.dart';
 import '../../data/providers/weekly_goal_providers.dart';
 import '../../services/ad_service.dart';
+import '../../services/analytics_service.dart';
 import '../../services/audio_service.dart';
 import 'debug/rebuild_counter.dart';
 import 'state/blackjack_controller.dart';
@@ -93,6 +94,12 @@ class _PlayScreenState extends ConsumerState<PlayScreen> {
     }
 
     if (!mounted) return;
+    AnalyticsService.instance.logGameEnd(
+      handsPlayed: session.handsPlayed,
+      coinsDelta: session.coinsNetThisSession,
+      winRate: session.winRate,
+    );
+    AnalyticsService.instance.logSessionSummaryShown();
     final goHome = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -1803,9 +1810,10 @@ class _SessionSummaryDialog extends StatelessWidget {
     final net = session.coinsNetThisSession;
     final netSign = net >= 0 ? '+' : '';
     final netColor = net >= 0 ? AppTheme.casinoGold : AppTheme.chipRed;
+    final tokens = Theme.of(context).extension<TableThemeTokens>();
 
     return Dialog(
-      backgroundColor: const Color(0xFF0D2B1A),
+      backgroundColor: tokens?.darkFelt ?? const Color(0xFF0D2B1A),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
@@ -2332,6 +2340,7 @@ class _DailyChallengesStripState extends State<_DailyChallengesStrip> {
   }
 
   void _openSheet(BuildContext context) {
+    AnalyticsService.instance.logDailyChallengesOpen();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,

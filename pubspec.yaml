@@ -1,7 +1,7 @@
 name: blackjack_trainer
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.0.0+13
+version: 1.0.0+14
 
 environment:
   sdk: ^3.5.4
@@ -20,6 +20,9 @@ dependencies:
   google_fonts: ^6.2.1
   audioplayers: ^5.2.1
   url_launcher: ^6.3.0
+  firebase_core: ^4.5.0
+  firebase_analytics: ^12.1.3
+  firebase_crashlytics: ^5.0.8
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +37,7 @@ flutter:
     - assets/cards/
     - assets/audio/
     - assets/icon/
+    - assets/google_fonts/
 
 flutter_launcher_icons:
   android: true

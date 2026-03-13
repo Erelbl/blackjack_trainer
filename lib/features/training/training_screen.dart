@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../app/theme.dart';
+import '../../services/analytics_service.dart';
 import '../play/widgets/table_background.dart';
 import '../trainer/drill/daily_drill_controller.dart';
 import '../trainer/trainer_game_tab.dart';
@@ -10,8 +11,19 @@ import '../trainer/strategy_tables_tab.dart';
 /// Entry point for the Trainer feature, reachable via the existing /training
 /// route. Contains four tabs: practice game, strategy reference, card counting
 /// trainer, and the Speed/Daily drill launcher.
-class TrainingScreen extends StatelessWidget {
+class TrainingScreen extends StatefulWidget {
   const TrainingScreen({super.key});
+
+  @override
+  State<TrainingScreen> createState() => _TrainingScreenState();
+}
+
+class _TrainingScreenState extends State<TrainingScreen> {
+  @override
+  void initState() {
+    super.initState();
+    AnalyticsService.instance.logTrainerOpen();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +38,9 @@ class TrainingScreen extends StatelessWidget {
             labelColor: AppTheme.casinoGold,
             unselectedLabelColor: Colors.white54,
             labelStyle: AppTheme.bodyStyle(
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: FontWeight.bold,
-              letterSpacing: 0.8,
+              letterSpacing: 0.5,
             ),
             unselectedLabelStyle: AppTheme.bodyStyle(fontSize: 13),
             tabs: const [

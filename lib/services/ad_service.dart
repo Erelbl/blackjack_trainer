@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../engine/config/retention_config.dart';
+import 'analytics_service.dart';
 
 class AdState {
   final bool isLoading;
@@ -163,6 +164,7 @@ class AdNotifier extends StateNotifier<AdState> {
     await _rewardedAd!.show(
       onUserEarnedReward: (ad, reward) async {
         await _incrementAdCount();
+        AnalyticsService.instance.logRewardedAdRewarded();
         if (mounted) state = state.copyWith(remainingAds: _remaining());
         onReward(reward.amount.toInt());
       },
@@ -209,6 +211,7 @@ class AdNotifier extends StateNotifier<AdState> {
     await _rewardedAd!.show(
       onUserEarnedReward: (ad, reward) async {
         await _incrementReviveCount();
+        AnalyticsService.instance.logRewardedAdRewarded();
         if (mounted) {
           state = state.copyWith(remainingRevives: _remainingRevives());
         }
